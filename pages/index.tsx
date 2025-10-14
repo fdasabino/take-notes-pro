@@ -42,9 +42,9 @@ export default function Home() {
   return (
     <div className="">
       {isUserLoading && <LoaderComponent />}
-      <NoteFormComponent onSubmit={handleSubmit} />
       {user && <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>}
-      <div className="mt-4 gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <NoteFormComponent onSubmit={handleSubmit} />
+      <div className="mt-10 gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {items.length > 0 ? (
           items.map((note) => (
             <CardComponent

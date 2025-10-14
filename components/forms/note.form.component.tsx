@@ -34,6 +34,7 @@ const NoteFormComponent: React.FC<NoteFormProps> = ({ onSubmit }) => {
               icon={MdOutlineNoteAdd}
               loading={isSubmitting}
               className="mt-2"
+              size="sm"
               disabled={isSubmitting}>
               {isSubmitting ? "Creating note..." : "Save note"}
             </ButtonComponent>
