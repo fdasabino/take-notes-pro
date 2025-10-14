@@ -1,4 +1,4 @@
-import { signInWithGoogle } from "@/store/auth.slice";
+import { signInWithGoogle, signOutUser } from "@/store/auth.slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearNotes, fetchNotesForUser } from "@/store/notes.slice";
 import { useEffect } from "react";
@@ -20,11 +20,24 @@ export default function Home() {
 
   return (
     <div className="">
-      <button
-        className="bg-blue-500 text-white px-4 py-2 rounded"
-        onClick={() => dispatch(signInWithGoogle())}>
-        Sign in with Google
-      </button>
+      {!user ? (
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={() => dispatch(signInWithGoogle())}>
+          Sign in with Google
+        </button>
+      ) : (
+        <button
+          className="bg-red-500 text-white px-4 py-2 rounded"
+          onClick={() => {
+            dispatch(signOutUser());
+            dispatch(clearNotes());
+          }}>
+          Sign Out
+        </button>
+      )}
+
+      {user && <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>}
       <ul className="mt-4 space-y-2">
         {items.map((note) => (
           <li
@@ -38,16 +51,3 @@ export default function Home() {
     </div>
   );
 }
-
-/**
- * Deploy the rules (`firebase deploy --only firestore:rules` or via the console) and retest.
-
-- **Stored data:** Every note the user should see must have a `userId` field that matches `request.auth.uid`. If you’ve been creating notes without that field, Firestore will reject the query even if the rules look right.
-
-- **Collection path:** If your data actually lives under `users/{uid}/notes`, update the slice to query `collection(db, "users", userId, "notes")`. Trying to read a collection the user has no rule for will also yield the same error.
-
-- **Auth state:** Ensure `listenToAuthChanges(dispatch)` runs once on app start so `request.auth.uid` is populated when the query executes.
-
-Once the rules and data line up, the existing `fetchNotesForUser({ userId })` thunk should succeed and your notes will populate in Redux.
-
- */
