@@ -10,7 +10,7 @@ import {
   signInWithPopup,
   signOut,
 } from "firebase/auth";
-import { GoogleAuthProvider } from "firebase/auth/web-extension";
+import { GoogleAuthProvider } from "firebase/auth";
 
 // Helper functions
 export const listenToAuthChanges = (dispatch: Dispatch<Action>): Unsubscribe => {

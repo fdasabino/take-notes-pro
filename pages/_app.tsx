@@ -3,16 +3,27 @@ import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { store } from "@/store";
 import { useEffect } from "react";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { listenToAuthChanges } from "@/store/thunk/auth.thunk";
+import { fetchNotesForUser } from "@/store/thunk/notes.thunk";
+import { clearNotes } from "@/store/notes.slice";
 
 function AuthListener() {
   const dispatch = useAppDispatch();
+  const userId = useAppSelector((state) => state.auth.user?.uid);
 
   useEffect(() => {
     const unsubscribe = listenToAuthChanges(dispatch);
     return () => unsubscribe();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(fetchNotesForUser({ userId }));
+    } else {
+      dispatch(clearNotes());
+    }
+  }, [userId, dispatch]);
 
   return null;
 }
