@@ -186,3 +186,34 @@
   --size-profile: var(--profile-size);
   --size-font: var(--font-size);
 }
+
+.pulse {
+  width: 22.4px;
+  height: 22.4px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 0 0 var(--color-accent);
+  animation: pulse-kefe91md 1.5s infinite linear;
+  position: relative;
+}
+
+.pulse:before,
+.pulse:after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 var(--color-accent);
+  animation: inherit;
+  animation-delay: -0.5s;
+}
+
+.pulse:after {
+  animation-delay: -1s;
+}
+
+@keyframes pulse-kefe91md {
+  100% {
+    box-shadow: 0 0 0 44.8px #0000;
+  }
+}

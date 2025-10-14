@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { motion, HTMLMotionProps, useReducedMotion } from "framer-motion";
 import { forwardRef, memo, useMemo } from "react";
 import React from "react";
+import { IconType } from "react-icons";
 
 /* =========================
    Types
@@ -14,7 +15,7 @@ interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
   size?: ButtonSize;
   children: React.ReactNode;
   loading?: boolean;
-  icon?: React.ReactNode;
+  icon?: IconType;
   iconPosition?: "left" | "right";
 }
 
@@ -138,7 +139,7 @@ const ButtonComponent = forwardRef<HTMLButtonElement, ButtonProps>(
         ),
       [className, disabled, loading, size, variant]
     );
-
+    const renderIcon = () => icon && icon({ size: 20 });
     return (
       <motion.button
         ref={ref}
@@ -173,7 +174,7 @@ const ButtonComponent = forwardRef<HTMLButtonElement, ButtonProps>(
           {!loading && icon && iconPosition === "right" && (
             <span
               className={cn("flex flex-shrink-0 justify-center items-center", contentGap(size))}>
-              {icon}
+              {renderIcon()}
             </span>
           )}
 
@@ -184,7 +185,7 @@ const ButtonComponent = forwardRef<HTMLButtonElement, ButtonProps>(
           {!loading && icon && iconPosition === "left" && (
             <span
               className={cn("flex flex-shrink-0 justify-center items-center", contentGap(size))}>
-              {icon}
+              {renderIcon()}
             </span>
           )}
         </div>

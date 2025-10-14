@@ -7,7 +7,8 @@ interface LayoutComponentProps {
 
 const LayoutComponent: React.FC<LayoutComponentProps> = ({ children }) => {
   return (
-    <main className={`${anaheim.className} ${nunito.className} ${doto.className} p-4`}>
+    <main
+      className={`${anaheim.className} ${nunito.className} ${doto.className} container mx-auto p-4`}>
       {children}
     </main>
   );

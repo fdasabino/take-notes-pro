@@ -1,15 +1,13 @@
-import { ButtonComponent } from "@/components/ui/button/button.component";
 import CardComponent from "@/components/ui/card/card.component";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { clearNotes } from "@/store/notes.slice";
-import { signInWithGoogle, signOutUser } from "@/store/thunk/auth.thunk";
 import { createNoteForUser } from "@/store/thunk/notes.thunk";
 import React from "react";
 import { type FormikHelpers } from "formik";
 import NoteFormComponent from "@/components/forms/note.form.component";
+import LoaderComponent from "@/components/ui/loader/loader.component";
 
 export default function Home() {
-  const { user } = useAppSelector((state) => state.auth);
+  const { user, loading: isUserLoading } = useAppSelector((state) => state.auth);
   const { items } = useAppSelector((state) => state.notes);
   const dispatch = useAppDispatch();
 
@@ -43,22 +41,7 @@ export default function Home() {
 
   return (
     <div className="">
-      {!user ? (
-        <ButtonComponent
-          variant="primary"
-          onClick={() => dispatch(signInWithGoogle())}>
-          Sign in with Google
-        </ButtonComponent>
-      ) : (
-        <ButtonComponent
-          variant="danger"
-          onClick={() => {
-            dispatch(signOutUser());
-            dispatch(clearNotes());
-          }}>
-          Sign Out
-        </ButtonComponent>
-      )}
+      {isUserLoading && <LoaderComponent />}
       <NoteFormComponent onSubmit={handleSubmit} />
       {user && <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>}
       <div className="mt-4 gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
