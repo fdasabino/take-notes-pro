@@ -1,4 +1,5 @@
 import React from "react";
+import { anaheim, doto, nunito } from "@/constants/fonts";
 
 interface LayoutComponentProps {
   children?: React.ReactNode;
@@ -6,11 +7,9 @@ interface LayoutComponentProps {
 
 const LayoutComponent: React.FC<LayoutComponentProps> = ({ children }) => {
   return (
-    <>
-      <header>Header</header>
-      <main>{children}</main>
-      <footer>Footer</footer>
-    </>
+    <main className={`${anaheim.className} ${nunito.className} ${doto.className} p-4`}>
+      {children}
+    </main>
   );
 };
 

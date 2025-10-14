@@ -1,26 +1,188 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* 1) Base */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: clamp(15px, 0.2vw + 14px, 18px);
+    scroll-behavior: smooth;
+    scroll-padding-top: clamp(3.5rem, 6vw, 4.5rem);
+  }
+
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  main {
+    height: 100dvh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-anaheim);
+    font-weight: 500;
+  }
+  h1 {
+    font-size: clamp(2.2rem, 4vw, 3rem);
+  }
+  h2 {
+    font-size: clamp(1.8rem, 3vw, 2.5rem);
+  }
+
+  p,
+  span,
+  a,
+  li,
+  article,
+  button,
+  input,
+  textarea,
+  select,
+  option {
+    font-family: var(--font-nunito);
+  }
+
+  p {
+    font-size: clamp(0.9rem, 1.2vw, 1rem);
+  }
+
+  button {
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    text-transform: uppercase;
+  }
+
+  :focus-visible {
+    outline: clamp(2px, 0.3vw, 3px) solid var(--color-accent);
+    outline-offset: clamp(2px, 0.25vw, 3px);
+    border-radius: var(--radius-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto;
+    }
+  }
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --color-background: #fafbfc;
+  --color-surface: #ffffff;
+  --color-foreground: #0f1419;
+  --color-muted: #64748b;
+  --color-primary: #4f46e5;
+  --color-accent: #4f46e5;
+  --color-active: #06b6d4;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-success: #10b981;
+
+  /* Typography */
+  --font-anaheim: "Anaheim", sans-serif;
+  --font-nunito: "Nunito", sans-serif;
+  --font-doto: "Doto", sans-serif;
+
+  /* Radii */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.5rem;
+
+  /* Spacing */
+  --space-xxs: 0.125rem;
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 0.75rem;
+  --space-lg: 1rem;
+  --space-xl: 1.5rem;
+  --space-2xl: 2rem;
+  --space-3xl: clamp(2.5rem, 4vw, 3.5rem);
+  --space-4xl: clamp(3.5rem, 6vw, 5rem);
+  --space-5xl: clamp(4rem, 8vw, 6rem);
+
+  --profile-size: clamp(160px, 18vw, 280px);
+  --font-size: clamp(0.875rem, 0.5vw + 0.5rem, 1rem);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-background: #0a0e1a;
+    --color-surface: #131825;
+    --color-foreground: #f1f5f9;
+    --color-muted: #94a3b8;
+    --color-primary: #22d3ee;
+    --color-accent: #3b82f6;
+    --color-active: #22d3ee;
+    --color-error: #f87171;
+    --color-warning: #fbbf24;
+    --color-success: #34d399;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+[data-theme="light"] {
+  --color-background: #fafbfc;
+  --color-surface: #ffffff;
+  --color-foreground: #0f1419;
+  --color-muted: #64748b;
+  --color-primary: #4f46e5;
+  --color-accent: #4f46e5;
+  --color-active: #06b6d4;
+  --color-error: #ef4444;
+  --color-warning: #f59e0b;
+  --color-success: #10b981;
+}
+
+[data-theme="dark"] {
+  --color-background: #0a0e1a;
+  --color-surface: #131825;
+  --color-foreground: #f1f5f9;
+  --color-muted: #94a3b8;
+  --color-primary: #22d3ee;
+  --color-accent: #3b82f6;
+  --color-active: #22d3ee;
+  --color-error: #f87171;
+  --color-warning: #fbbf24;
+  --color-success: #34d399;
+}
+
+/* 3) Expose to Tailwind tokens if you still use utilities elsewhere */
+@theme inline {
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-foreground: var(--color-foreground);
+  --color-muted: var(--color-muted);
+  --color-primary: var(--color-primary);
+  --color-accent: var(--color-accent);
+  --color-active: var(--color-active);
+  --color-error: var(--color-error);
+  --color-warning: var(--color-warning);
+  --color-success: var(--color-success);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+
+  --font-anaheim: var(--font-anaheim);
+  --font-nunito: var(--font-nunito);
+  --font-doto: var(--font-doto);
+  --size-profile: var(--profile-size);
+  --size-font: var(--font-size);
 }
