@@ -51,12 +51,10 @@ const InputComponent: React.FC<InputProps> = ({
       {inputOrTextarea}
       {showCharCount && (
         <div
-          className={`absolute bottom-0 right-2 flex flex-col items-center justify-center h-full ${"text-base_gray"} ${
+          className={`absolute -top-20 right-2 flex items-center justify-center h-full ${"text-base_gray"} ${
             isError ? "text-error" : ""
           }  text-[9px] sm:text-xs font-bold`}>
-          <span>{charCount}</span>
-          <hr className={`my-1 "border-base_white"}`} />
-          <span>{maxLength ? maxLength : ""}</span>
+          <span>{charCount}</span> /<span>{maxLength ? maxLength : ""}</span>
         </div>
       )}
     </div>

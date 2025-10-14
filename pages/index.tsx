@@ -76,6 +76,7 @@ export default function Home() {
                 value={values.note}
                 placeholder="Write your note here..."
                 maxLength={500}
+                rows={10}
                 showCharCount
               />
               <ButtonComponent
