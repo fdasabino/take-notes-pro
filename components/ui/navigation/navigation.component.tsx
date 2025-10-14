@@ -1,4 +1,3 @@
-import { ButtonComponent } from "@/components/ui/button/button.component";
 import LogoComponent from "@/components/ui/logo/logo.component";
 import { useAppDispatch } from "@/store/hooks";
 import { signOutUser } from "@/store/thunk/auth.thunk";

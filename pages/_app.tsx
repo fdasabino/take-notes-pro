@@ -8,15 +8,46 @@ import { listenToAuthChanges } from "@/store/thunk/auth.thunk";
 import { fetchNotesForUser } from "@/store/thunk/notes.thunk";
 import { clearNotes } from "@/store/notes.slice";
 import LayoutComponent from "@/components/layout.component";
+import { useRouter } from "next/router";
+
+const PUBLIC_PATHS = ["/auth/login", "/auth/register", "/_next", "/favicon.ico"];
+const AUTH_PATHS = ["/auth/login", "/auth/register"];
+
+const isPublicPath = (path: string) =>
+  PUBLIC_PATHS.some((publicPath) => path === publicPath || path.startsWith(`${publicPath}/`));
 
 function AuthListener() {
   const dispatch = useAppDispatch();
-  const userId = useAppSelector((state) => state.auth.user?.uid);
+  const router = useRouter();
+  const { user, loading } = useAppSelector((state) => state.auth);
+  const userId = user?.uid;
 
   useEffect(() => {
     const unsubscribe = listenToAuthChanges(dispatch);
     return () => unsubscribe();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!router.isReady || loading) {
+      return;
+    }
+
+    const currentPath = router.asPath.split("?")[0];
+    if (!user && !isPublicPath(currentPath)) {
+      router.replace(
+        {
+          pathname: "/auth/login",
+          query: { redirect: router.asPath },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+
+    if (user && AUTH_PATHS.includes(currentPath)) {
+      router.replace("/", undefined, { shallow: true });
+    }
+  }, [user, loading, router]);
 
   useEffect(() => {
     if (userId) {
