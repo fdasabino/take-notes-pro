@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { listenToAuthChanges } from "@/store/thunk/auth.thunk";
 import { fetchNotesForUser } from "@/store/thunk/notes.thunk";
 import { clearNotes } from "@/store/notes.slice";
+import LayoutComponent from "@/components/layout.component";
 
 function AuthListener() {
   const dispatch = useAppDispatch();
@@ -31,8 +32,10 @@ function AuthListener() {
 export default function App({ Component, pageProps: { ...pageProps } }: AppProps) {
   return (
     <Provider store={store}>
-      <AuthListener />
-      <Component {...pageProps} />
+      <LayoutComponent>
+        <AuthListener />
+        <Component {...pageProps} />
+      </LayoutComponent>
     </Provider>
   );
 }
