@@ -43,7 +43,7 @@ export default function Home() {
     <div className="">
       {isUserLoading && <LoaderComponent />}
 
-      {user && <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>}
+      {user ? <h1 className="text-2xl font-bold">Welcome {user.name || user.email}</h1> : null}
       <NoteFormComponent onSubmit={handleSubmit} />
       <div className="mt-10 gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {items.length > 0 ? (
@@ -54,7 +54,11 @@ export default function Home() {
             />
           ))
         ) : (
-          <p>No notes available. Start by adding a new note!</p>
+          <div className="block w-full col-span-3">
+            <h4 className="text-foreground/50 text-center">
+              No notes available. Start by adding a new note!
+            </h4>
+          </div>
         )}
       </div>
     </div>
