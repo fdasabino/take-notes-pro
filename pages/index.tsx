@@ -1,22 +1,11 @@
-import { signInWithGoogle, signOutUser } from "@/store/auth.slice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { clearNotes, fetchNotesForUser } from "@/store/notes.slice";
-import { useEffect } from "react";
+import { clearNotes } from "@/store/notes.slice";
+import { signInWithGoogle, signOutUser } from "@/store/thunk/auth.thunk";
 
 export default function Home() {
   const { user } = useAppSelector((state) => state.auth);
   const { items } = useAppSelector((state) => state.notes);
   const dispatch = useAppDispatch();
-  const userId = user?.uid ?? null;
-
-  useEffect(() => {
-    if (!userId) {
-      dispatch(clearNotes());
-      return;
-    }
-
-    dispatch(fetchNotesForUser({ userId }));
-  }, [dispatch, userId]);
 
   return (
     <div className="">

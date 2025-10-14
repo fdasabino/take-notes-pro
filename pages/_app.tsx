@@ -3,8 +3,8 @@ import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { store } from "@/store";
 import { useEffect } from "react";
-import { listenToAuthChanges } from "@/store/auth.slice";
 import { useAppDispatch } from "@/store/hooks";
+import { listenToAuthChanges } from "@/store/thunk/auth.thunk";
 
 function AuthListener() {
   const dispatch = useAppDispatch();
