@@ -42,6 +42,7 @@ export default function Home() {
   return (
     <div className="">
       {isUserLoading && <LoaderComponent />}
+
       {user && <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>}
       <NoteFormComponent onSubmit={handleSubmit} />
       <div className="mt-10 gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
