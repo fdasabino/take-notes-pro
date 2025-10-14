@@ -4,13 +4,17 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearNotes } from "@/store/notes.slice";
 import { signInWithGoogle, signOutUser } from "@/store/thunk/auth.thunk";
 import { createNoteForUser } from "@/store/thunk/notes.thunk";
-import { useState } from "react";
+import React from "react";
+import { Formik, Form, type FormikHelpers } from "formik";
+import InputComponent from "@/components/ui/input/input.component";
+import { noteValidationSchema } from "@/components/ui/input/validation/input.validation";
+
+const initialValues = { note: "" };
 
 export default function Home() {
   const { user } = useAppSelector((state) => state.auth);
   const { items } = useAppSelector((state) => state.notes);
   const dispatch = useAppDispatch();
-  const [noteContent, setNoteContent] = useState("");
 
   const getTimeOfDay = () => {
     const hour = new Date().getHours();
@@ -19,15 +23,26 @@ export default function Home() {
     return "Evening Note";
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle note submission logic here
-    await dispatch(
-      createNoteForUser({
-        userId: user!.uid,
-        note: { title: getTimeOfDay(), content: noteContent },
-      })
-    );
+  const handleSubmit = async (
+    values: { note: string },
+    { resetForm, setSubmitting }: FormikHelpers<{ note: string }>
+  ) => {
+    if (!user?.uid) {
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      await dispatch(
+        createNoteForUser({
+          userId: user.uid,
+          note: { title: getTimeOfDay(), content: values.note },
+        })
+      );
+      resetForm();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -48,22 +63,32 @@ export default function Home() {
           Sign Out
         </ButtonComponent>
       )}
-      <form
-        className="mt-4"
+      <Formik
+        validationSchema={noteValidationSchema}
+        initialValues={initialValues}
         onSubmit={handleSubmit}>
-        <textarea
-          value={noteContent}
-          className="w-full p-2 border border-gray-300 rounded"
-          placeholder="Take a note..."
-          onChange={(e) => setNoteContent(e.target.value)}
-        />
-        <ButtonComponent
-          type="submit"
-          variant="success"
-          className="mt-2">
-          Add Note
-        </ButtonComponent>
-      </form>
+        {({ values, isSubmitting }) => {
+          return (
+            <Form className="my-4">
+              <InputComponent
+                type="textarea"
+                name="note"
+                value={values.note}
+                placeholder="Write your note here..."
+                maxLength={500}
+                showCharCount
+              />
+              <ButtonComponent
+                type="submit"
+                variant="primary"
+                className="mt-2"
+                disabled={isSubmitting}>
+                {isSubmitting ? "Saving..." : "Add Note"}
+              </ButtonComponent>
+            </Form>
+          );
+        }}
+      </Formik>
       {user && <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>}
       <div className="mt-4 gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {items.length > 0 ? (
