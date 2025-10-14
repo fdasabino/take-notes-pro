@@ -43,21 +43,23 @@ const InputComponent: React.FC<InputProps> = ({
     );
 
   return (
-    <div
-      className={`relative flex items-center gap-2 p-2 border rounded-md w-full ${"border-base_gray"} ${
-        isError ? "border-error" : ""
-      }`}>
-      <span className={`text-base_primary ${isError ? "text-error" : ""}`}>{renderIcon()}</span>
-      {inputOrTextarea}
+    <>
       {showCharCount && (
         <div
-          className={`absolute -top-20 right-2 flex items-center justify-center h-full ${"text-base_gray"} ${
+          className={`flex items-center justify-end h-full ${"text-base_gray"} ${
             isError ? "text-error" : ""
           }  text-[9px] sm:text-xs font-bold`}>
           <span>{charCount}</span> /<span>{maxLength ? maxLength : ""}</span>
         </div>
       )}
-    </div>
+      <div
+        className={`relative flex items-center gap-2 p-2 border rounded-b-md rounded-tl-md w-full ${"border-base_gray"} ${
+          isError ? "border-error" : ""
+        }`}>
+        <span className={`text-base_primary ${isError ? "text-error" : ""}`}>{renderIcon()}</span>
+        {inputOrTextarea}
+      </div>
+    </>
   );
 };
 

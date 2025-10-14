@@ -5,11 +5,8 @@ import { clearNotes } from "@/store/notes.slice";
 import { signInWithGoogle, signOutUser } from "@/store/thunk/auth.thunk";
 import { createNoteForUser } from "@/store/thunk/notes.thunk";
 import React from "react";
-import { Formik, Form, type FormikHelpers } from "formik";
-import InputComponent from "@/components/ui/input/input.component";
-import { noteValidationSchema } from "@/components/ui/input/validation/input.validation";
-
-const initialValues = { note: "" };
+import { type FormikHelpers } from "formik";
+import NoteFormComponent from "@/components/forms/note.form.component";
 
 export default function Home() {
   const { user } = useAppSelector((state) => state.auth);
@@ -31,7 +28,6 @@ export default function Home() {
       setSubmitting(false);
       return;
     }
-
     try {
       await dispatch(
         createNoteForUser({
@@ -63,33 +59,7 @@ export default function Home() {
           Sign Out
         </ButtonComponent>
       )}
-      <Formik
-        validationSchema={noteValidationSchema}
-        initialValues={initialValues}
-        onSubmit={handleSubmit}>
-        {({ values, isSubmitting }) => {
-          return (
-            <Form className="my-4">
-              <InputComponent
-                type="textarea"
-                name="note"
-                value={values.note}
-                placeholder="Write your note here..."
-                maxLength={500}
-                rows={10}
-                showCharCount
-              />
-              <ButtonComponent
-                type="submit"
-                variant="primary"
-                className="mt-2"
-                disabled={isSubmitting}>
-                {isSubmitting ? "Saving..." : "Add Note"}
-              </ButtonComponent>
-            </Form>
-          );
-        }}
-      </Formik>
+      <NoteFormComponent onSubmit={handleSubmit} />
       {user && <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>}
       <div className="mt-4 gap-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         {items.length > 0 ? (
