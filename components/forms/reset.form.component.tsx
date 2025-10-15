@@ -1,7 +1,7 @@
 import { ButtonComponent } from "@/components/ui/button/button.component";
 import InputComponent from "@/components/ui/input/input.component";
 import { resetValidation } from "@/components/ui/input/validation/input.validation";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikHelpers } from "formik";
 import { MdEmail, MdArrowForward } from "react-icons/md";
 import React from "react";
 import LogoComponent from "@/components/ui/logo/logo.component";
@@ -18,7 +18,10 @@ const ResetFormComponent = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const handleResetPassword = async (values: typeof initialValues) => {
+  const handleResetPassword = async (
+    values: { email: string },
+    { resetForm }: FormikHelpers<{ email: string }>
+  ) => {
     try {
       const result = await dispatch(resetPassword({ email: values.email }));
       if (resetPassword.rejected.match(result)) {
@@ -28,6 +31,7 @@ const ResetFormComponent = () => {
           title: "Email sent",
           message: "Check your inbox to reset your password",
         });
+        resetForm();
       }
     } catch (error) {
       if (error instanceof FirebaseError) {
