@@ -1,4 +1,3 @@
-import { useState } from "react";
 import LogoComponent from "@/components/ui/logo/logo.component";
 import { ButtonComponent } from "@/components/ui/button/button.component";
 import { useAppDispatch } from "@/store/hooks";
@@ -20,7 +19,6 @@ const initialValues = {
 };
 
 const LoginFormComponent = () => {
-  const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useAppDispatch();
 
   const handleLogin = async (values: typeof initialValues) => {
@@ -136,16 +134,7 @@ const LoginFormComponent = () => {
               </Form>
             )}
           </Formik>
-          <div className="flex justify-between items-center">
-            <label className="flex items-center space-x-2 text-sm cursor-pointer">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={() => setRememberMe(!rememberMe)}
-                className="form-checkbox h-4 w-4 text-primary focus:ring-primary"
-              />
-              <p className="text-foreground/90">Remember me</p>
-            </label>
+          <div className="flex justify-center items-center">
             <div>
               <Link
                 href="/auth/reset"

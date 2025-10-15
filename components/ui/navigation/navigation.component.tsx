@@ -14,7 +14,7 @@ interface NavigationComponentProps {
 }
 
 const NavigationComponent = ({
-  userName = "John Doe",
+  userName = "",
   userEmail = "john.doe@example.com",
   userImage = "/images/profile_placeholder.jpg",
 }: NavigationComponentProps) => {

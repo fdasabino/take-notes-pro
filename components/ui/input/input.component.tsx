@@ -25,7 +25,7 @@ const InputComponent: React.FC<InputProps> = ({
         {...props}
         maxLength={maxLength}
         className={`${"text-foreground"} w-full p-1 bg-transparent focus:outline-none placeholder:text-sm ${
-          isError ? "placeholder:text-error" : "placeholder:text-muted/50"
+          isError ? "placeholder:text-error" : "placeholder:text-muted/80"
         } `}
         rows={props.rows || 4}
         placeholder={resolvedPlaceholder}
@@ -36,7 +36,7 @@ const InputComponent: React.FC<InputProps> = ({
         {...props}
         maxLength={maxLength}
         className={` ${"text-foreground"} w-full p-1 bg-transparent focus:outline-none placeholder:text-sm ${
-          isError ? "placeholder:text-error" : "placeholder:text-muted/50"
+          isError ? "placeholder:text-error" : "placeholder:text-muted/80"
         }`}
         placeholder={resolvedPlaceholder}
       />
@@ -49,11 +49,11 @@ const InputComponent: React.FC<InputProps> = ({
         <div>
           {showCharCount && (
             <>
-              <span className={`text-foreground text-xs ${isError ? "text-error" : ""}`}>
+              <span className={`text-xs ${isError ? "text-error" : "text-foreground"}`}>
                 {charCount}
               </span>{" "}
-              <span className={`text-foreground text-xs ${isError ? "text-error" : ""}`}>/</span>
-              <span className={`text-foreground text-xs ${isError ? "text-error" : ""}`}>
+              <span className={`text-xs ${isError ? "text-error" : "text-foreground"}`}>/</span>
+              <span className={`text-xs ${isError ? "text-error" : "text-foreground"}`}>
                 {maxLength ? maxLength : ""}
               </span>
             </>
@@ -61,8 +61,8 @@ const InputComponent: React.FC<InputProps> = ({
         </div>
       </div>
       <div
-        className={`relative flex items-center gap-2 p-2 border rounded-b-md w-full mb-3 ${"border-muted/20"} ${
-          isError ? "border-error" : ""
+        className={`relative flex items-center gap-2 p-2 border rounded-b-md w-full mb-3 ${
+          isError ? "border-error" : "border-muted/20"
         }`}>
         <span className={`text-foreground ${isError ? "text-error" : ""}`}>{renderIcon()}</span>
         {inputOrTextarea}
