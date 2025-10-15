@@ -69,11 +69,11 @@ const LoginFormComponent = () => {
           <div className="text-center">
             <div className="flex justify-center mb-6">
               <LogoComponent
-                size={72}
+                size={48}
                 showText={true}
               />
             </div>
-            <h2 className="text-foreground">Welcome Back</h2>
+            <h2 className="text-foreground text-lg md:text-2xl">Welcome Back</h2>
             <p className="text-foreground/50 mt-2">Sign in to continue your note-taking journey</p>
           </div>
 

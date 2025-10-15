@@ -64,7 +64,7 @@ const InputComponent: React.FC<InputProps> = ({
         className={`relative flex items-center gap-2 p-2 border rounded-b-md w-full mb-3 ${
           isError ? "border-error" : "border-muted/20"
         }`}>
-        <span className={`text-foreground ${isError ? "text-error" : ""}`}>{renderIcon()}</span>
+        <span className={` ${isError ? "text-error" : "text-foreground"}`}>{renderIcon()}</span>
         {inputOrTextarea}
       </div>
     </>
