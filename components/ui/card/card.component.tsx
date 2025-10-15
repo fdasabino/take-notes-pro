@@ -5,6 +5,11 @@ import React, { useMemo, useState } from "react";
 import { MdOutlineEditNote } from "react-icons/md";
 import { TiDelete } from "react-icons/ti";
 import { motion } from "motion/react";
+import {
+  showConfirmDeleteToast,
+  showErrorToast,
+  showSuccessToast,
+} from "@/components/ui/toast/toast.component";
 
 const formatDateTime = (value?: string) => {
   if (!value) {
@@ -42,12 +47,23 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
     return content.length > 200;
   }, [note.content]);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!user?.uid) {
       return;
     }
 
-    dispatch(deleteNoteForUser({ userId: user.uid, noteId: note.id }));
+    const result = await dispatch(deleteNoteForUser({ userId: user.uid, noteId: note.id }));
+    if (result.meta.requestStatus === "fulfilled") {
+      showSuccessToast({
+        title: "Note deleted",
+        message: "The note has been successfully deleted.",
+      });
+    } else {
+      showErrorToast({
+        title: "Error deleting note",
+        message: "There was an error deleting the note. Please try again.",
+      });
+    }
   };
 
   return (
@@ -127,7 +143,16 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
               whileHover={{ scale: 1.1, rotate: -5 }}
               whileTap={{ scale: 0.95 }}
               type="button"
-              onClick={handleDelete}
+              onClick={() =>
+                showConfirmDeleteToast({
+                  title: "Delete this note?",
+                  message: "This action cannot be undone.",
+                  confirmLabel: "Delete",
+                  cancelLabel: "Keep note",
+                  type: "error",
+                  onConfirm: () => dispatch(handleDelete),
+                })
+              }
               className="group/btn relative rounded-xl border border-error/20 bg-error/10 p-2.5 text-error shadow-sm transition-all hover:border-error/40 hover:bg-error/20 hover:shadow  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error/50"
               aria-label="Delete note">
               <TiDelete className="h-5 w-5 transition-transform group-hover/btn:scale-110" />
