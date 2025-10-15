@@ -3,6 +3,7 @@ import { anaheim, doto, nunito } from "@/constants/fonts";
 import NavigationComponent from "@/components/ui/navigation/navigation.component";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/store/hooks";
+import FooterComponent from "@/components/ui/footer/footer.component";
 interface LayoutComponentProps {
   children?: React.ReactNode;
 }
@@ -26,8 +27,9 @@ const LayoutComponent: React.FC<LayoutComponentProps> = ({ children }) => {
         />
       )}
       <main
-        className={`${anaheim.className} ${nunito.className} ${doto.className} container mx-auto p-4`}>
+        className={`${anaheim.className} ${nunito.className} ${doto.className} relative container mx-auto p-4 mb-20`}>
         {children}
+        <FooterComponent />
       </main>
     </>
   );
