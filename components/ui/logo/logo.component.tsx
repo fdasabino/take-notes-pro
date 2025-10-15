@@ -183,14 +183,14 @@ const LogoComponent: React.FC<LogoProps> = ({
 
       {/* Logo Text */}
       {showText && variant === "default" && (
-        <div className="flex flex-col">
+        <div className="flex flex-col text-foreground">
           <span
-            className="tracking-tight"
+            className="tracking-tight text-foreground"
             style={{ fontSize: size * 0.4 }}>
             Take Notes
           </span>
           <span
-            className="tracking-wide"
+            className="tracking-wide font-bold text-foreground"
             style={{
               fontSize: size * 0.25,
               background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
