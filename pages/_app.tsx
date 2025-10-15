@@ -10,7 +10,7 @@ import { clearNotes } from "@/store/notes.slice";
 import LayoutComponent from "@/components/layout.component";
 import { useRouter } from "next/router";
 
-const PUBLIC_PATHS = ["/auth/login", "/auth/register", "/_next", "/favicon.ico"];
+const PUBLIC_PATHS = ["/auth/login", "/auth/register", "/auth/reset", "/_next", "/favicon.ico"];
 const AUTH_PATHS = ["/auth/login", "/auth/register"];
 
 const isPublicPath = (path: string) =>

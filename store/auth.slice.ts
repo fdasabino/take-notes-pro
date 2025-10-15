@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AuthState, AuthUser } from "@/store/types/auth.types";
 import {
+  resetPassword,
   signInWithEmail,
   signInWithGoogle,
   signOutUser,
@@ -80,6 +81,18 @@ const authSlice = createSlice({
       .addCase(signInWithGoogle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? "Unable to sign in with Google.";
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Unable to reset password.";
       });
   },
 });

@@ -17,7 +17,7 @@ const initialValues = {
   login_password: "",
 };
 
-export function LoginFormComponent() {
+const LoginFormComponent = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -70,25 +70,32 @@ export function LoginFormComponent() {
             validationSchema={signInValidation}
             onSubmit={handleLogin}
             enableReinitialize>
-            {() => (
+            {({ values, isSubmitting, isValid, errors }) => (
               <Form className="flex flex-col items-center space-y-4 p-4 rounded-lg w-full max-w-lg">
                 <InputComponent
                   type="email"
                   icon={MdEmail}
                   name="login_email"
+                  value={values.login_email}
                   placeholder="Email address"
                 />
                 <InputComponent
                   type="password"
                   icon={AiOutlineArrowRight}
                   name="login_password"
+                  value={values.login_password}
                   placeholder="Password"
                 />
                 <ButtonComponent
                   size="md"
-                  variant="primary"
+                  variant={isValid ? "success" : "danger"}
                   type="submit"
                   className="w-full"
+                  disabled={
+                    isSubmitting ||
+                    errors.login_email !== undefined ||
+                    errors.login_password !== undefined
+                  }
                   icon={CgLogIn}>
                   Sign In
                 </ButtonComponent>
@@ -107,7 +114,7 @@ export function LoginFormComponent() {
             </label>
             <div>
               <Link
-                href="#"
+                href="/auth/reset"
                 className="text-sm text-primary hover:underline">
                 Forgot password?
               </Link>
@@ -126,4 +133,6 @@ export function LoginFormComponent() {
       </div>
     </div>
   );
-}
+};
+
+export default LoginFormComponent;

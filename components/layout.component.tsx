@@ -8,7 +8,7 @@ interface LayoutComponentProps {
   children?: React.ReactNode;
 }
 
-const PUBLIC_PATHS = ["/auth/login", "/auth/register", "/_next", "/favicon.ico"];
+const PUBLIC_PATHS = ["/auth/login", "/auth/register", "/auth/reset", "/_next", "/favicon.ico"];
 const isPublicPath = (path: string) =>
   PUBLIC_PATHS.some((publicPath) => path === publicPath || path.startsWith(`${publicPath}/`));
 
@@ -29,7 +29,7 @@ const LayoutComponent: React.FC<LayoutComponentProps> = ({ children }) => {
       <main
         className={`${anaheim.className} ${nunito.className} ${doto.className} relative container mx-auto p-4 mb-20`}>
         {children}
-        <FooterComponent />
+        {isPublicPath(pathname) ? null : <FooterComponent />}
       </main>
     </>
   );

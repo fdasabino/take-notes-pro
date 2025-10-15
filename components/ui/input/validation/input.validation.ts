@@ -19,3 +19,9 @@ export const signInValidation = Yup.object().shape({
     .min(6, `Password is too short (minimum ${MIN_PASSWORD_LENGTH} characters)`)
     .max(20, `Password is too long (maximum ${MAX_PASSWORD_LENGTH} characters)`),
 });
+
+export const resetValidation = Yup.object().shape({
+  email: Yup.string()
+    .email("Please enter a valid email address...")
+    .required("Email address is required..."),
+});

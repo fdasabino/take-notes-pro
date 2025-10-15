@@ -8,6 +8,7 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
+  sendPasswordResetEmail,
   signOut,
 } from "firebase/auth";
 import { GoogleAuthProvider } from "firebase/auth";
@@ -101,6 +102,17 @@ export const signInWithGoogle = createAsyncThunk<AuthUser, void, { rejectValue: 
       const result = await signInWithPopup(auth, googleProvider);
       const { uid, email, photoURL, displayName } = result.user;
       return { uid, email, imageURL: photoURL, name: displayName };
+    } catch (error) {
+      return rejectWithValue(getFirebaseErrorMessage(error));
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk<void, { email: string }, { rejectValue: string }>(
+  "auth/resetPassword",
+  async ({ email }, { rejectWithValue }) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
     } catch (error) {
       return rejectWithValue(getFirebaseErrorMessage(error));
     }
