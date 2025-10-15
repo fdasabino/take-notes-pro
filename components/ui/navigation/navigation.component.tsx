@@ -1,17 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import Logo from "../logo/logo.component";
 import Image from "next/image";
-import {
-  FaUser,
-  FaCog,
-  FaBell,
-  FaSignOutAlt,
-  FaMoon,
-  FaFileAlt,
-  FaStar,
-  FaCreditCard,
-} from "react-icons/fa";
-import { BiBell, BiHelpCircle } from "react-icons/bi";
+import { FaUser, FaSignOutAlt, FaMoon, FaFileAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/hooks";
 import { signOutUser } from "@/store/thunk/auth.thunk";
@@ -77,22 +67,6 @@ const NavigationComponent = ({
             </Link>
           </div>
 
-          {/* Center Navigation (optional) */}
-          <div className="hidden md:flex items-center gap-6">
-            <button className="text-foreground hover:text-foreground/80 transition-colors flex items-center gap-2">
-              <FaFileAlt className="h-4 w-4" />
-              My Notes
-            </button>
-            <button className="text-foreground hover:text-foreground/80 transition-colors flex items-center gap-2">
-              <FaStar className="h-4 w-4" />
-              Favorites
-            </button>
-            <button className="text-foreground hover:text-foreground/80 transition-colors flex items-center gap-2">
-              <BiBell className="h-4 w-4" />
-              Updates
-            </button>
-          </div>
-
           {/* User Profile Dropdown */}
           <div
             className="relative"
@@ -148,35 +122,7 @@ const NavigationComponent = ({
                   <span>My Notes</span>
                 </button>
 
-                <button
-                  onClick={() => handleMenuAction("favorites")}
-                  className="cursor-pointer w-full px-4 py-2 text-left flex items-center gap-2 text-foreground hover:bg-active/20 transition-colors">
-                  <FaStar className="h-4 w-4" />
-                  <span>Favorites</span>
-                </button>
-
                 <div className="border-t border-muted/20 my-1"></div>
-
-                <button
-                  onClick={() => handleMenuAction("settings")}
-                  className="cursor-pointer w-full px-4 py-2 text-left flex items-center gap-2 text-foreground hover:bg-active/20 transition-colors">
-                  <FaCog className="h-4 w-4" />
-                  <span>Settings</span>
-                </button>
-
-                <button
-                  onClick={() => handleMenuAction("billing")}
-                  className="cursor-pointer w-full px-4 py-2 text-left flex items-center gap-2 text-foreground hover:bg-active/20 transition-colors">
-                  <FaCreditCard className="h-4 w-4" />
-                  <span>Billing</span>
-                </button>
-
-                <button
-                  onClick={() => handleMenuAction("notifications")}
-                  className="cursor-pointer w-full px-4 py-2 text-left flex items-center gap-2 text-foreground hover:bg-active/20 transition-colors">
-                  <FaBell className="h-4 w-4" />
-                  <span>Notifications</span>
-                </button>
 
                 <button
                   onClick={() => handleMenuAction("theme")}
@@ -185,20 +131,11 @@ const NavigationComponent = ({
                   <span>Appearance</span>
                 </button>
 
-                <div className="border-t border-slate-200 my-1"></div>
-
-                <button
-                  onClick={() => handleMenuAction("help")}
-                  className="cursor-pointer w-full px-4 py-2 text-left flex items-center gap-2 text-foreground hover:bg-active/20 transition-colors">
-                  <BiHelpCircle className="h-4 w-4" />
-                  <span>Help & Support</span>
-                </button>
-
                 <div className="border-t border-muted/20 my-1"></div>
 
                 <button
                   onClick={() => handleMenuAction("logout")}
-                  className="cursor-pointer w-full px-4 py-2 text-left flex items-center gap-2 text-error hover:bg-error/20 rounded-b-md transition-colors">
+                  className="cursor-pointer w-full px-4 py-2 text-left flex items-center gap-2 text-error hover:bg-error/20 rounded-b-lg transition-colors">
                   <FaSignOutAlt className="h-4 w-4" />
                   <span>Log Out</span>
                 </button>
