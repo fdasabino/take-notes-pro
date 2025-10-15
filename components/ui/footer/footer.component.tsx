@@ -8,13 +8,12 @@ const FooterComponent = () => {
   return (
     <footer className="relative mt-10 w-full bg-background border-t border-muted/20">
       <div className="max-w-7xl mx-auto px-6 py-6">
-        {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          {/* Copyright */}
-          <p className="flex items-center gap-1 text-foreground/80">
-            <span>© {currentYear} Take Notes Pro. Made with</span>
-            <FaHeart className="h-4 w-4 text-red-500 fill-red-500" />
-            <span>for note-takers everywhere.</span>
+          <p className="flex items-center flex-col md:flex-row gap-1 text-foreground/80">
+            <span className="flex items-center gap-1">
+              © {currentYear} Take Notes Pro. Made with{" "}
+              <FaHeart className="h-4 w-4 text-red-500 fill-red-500" />
+            </span>
           </p>
 
           {/* Social Links */}
