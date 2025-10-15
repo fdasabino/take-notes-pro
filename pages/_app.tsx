@@ -9,7 +9,7 @@ import { fetchNotesForUser } from "@/store/thunk/notes.thunk";
 import { clearNotes } from "@/store/notes.slice";
 import LayoutComponent from "@/components/layout.component";
 import { useRouter } from "next/router";
-
+import { Toaster } from "react-hot-toast";
 const PUBLIC_PATHS = ["/auth/login", "/auth/register", "/auth/reset", "/_next", "/favicon.ico"];
 const AUTH_PATHS = ["/auth/login", "/auth/register"];
 
@@ -65,6 +65,7 @@ export default function App({ Component, pageProps: { ...pageProps } }: AppProps
     <Provider store={store}>
       <LayoutComponent>
         <AuthListener />
+        <Toaster position="top-right" />
         <Component {...pageProps} />
       </LayoutComponent>
     </Provider>

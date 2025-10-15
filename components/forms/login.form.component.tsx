@@ -11,6 +11,8 @@ import { AiOutlineArrowRight } from "react-icons/ai";
 import { CgLogIn } from "react-icons/cg";
 import Link from "next/link";
 import { signInWithEmail, signInWithGoogle } from "@/store/thunk/auth.thunk";
+import { FirebaseError } from "firebase/app";
+import { showErrorToast, showSuccessToast } from "@/components/ui/toast/toast.component";
 
 const initialValues = {
   login_email: "",
@@ -22,10 +24,42 @@ const LoginFormComponent = () => {
   const dispatch = useAppDispatch();
 
   const handleLogin = async (values: typeof initialValues) => {
-    console.log("Login values:", values);
-    const email = values.login_email;
-    const password = values.login_password;
-    await dispatch(signInWithEmail({ email, password }));
+    try {
+      const email = values.login_email;
+      const password = values.login_password;
+
+      const result = await dispatch(signInWithEmail({ email, password }));
+      if (signInWithEmail.rejected.match(result)) {
+        showErrorToast({ title: "Login failed", message: result.payload || "Unknown error" });
+      } else {
+        showSuccessToast({ title: "Login successful", message: "Welcome back!" });
+      }
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        showErrorToast({ title: "Login failed", message: error.message || "Unknown error" });
+      }
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const result = await dispatch(signInWithGoogle());
+      if (signInWithGoogle.rejected.match(result)) {
+        showErrorToast({
+          title: "Google sign-in failed",
+          message: result.payload || "Unknown error",
+        });
+      } else {
+        showSuccessToast({ title: "Google sign-in successful", message: "Welcome back!" });
+      }
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        showErrorToast({
+          title: "Google sign-in failed",
+          message: error.message || "Unknown error",
+        });
+      }
+    }
   };
 
   return (
@@ -52,7 +86,7 @@ const LoginFormComponent = () => {
               variant="primary"
               icon={FaGoogle}
               className="w-full"
-              onClick={() => dispatch(signInWithGoogle())}>
+              onClick={handleGoogleLogin}>
               Continue with Google
             </ButtonComponent>
           </div>

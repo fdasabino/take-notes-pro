@@ -5,6 +5,7 @@ import { FaUser, FaSignOutAlt, FaMoon, FaFileAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/hooks";
 import { signOutUser } from "@/store/thunk/auth.thunk";
+import { showErrorToast, showInfoToast } from "@/components/ui/toast/toast.component";
 
 interface NavigationComponentProps {
   userName?: string;
@@ -49,7 +50,12 @@ const NavigationComponent = ({
     setIsDropdownOpen(false);
     // In a real app, these would trigger actual functionality
     if (action === "logout") {
-      dispatch(signOutUser());
+      const result = dispatch(signOutUser());
+      if (signOutUser.rejected.match(result)) {
+        showErrorToast({ title: "Logout failed", message: result.payload || "Unknown error" });
+      } else {
+        showInfoToast({ title: "Logged out", message: "You have been logged out successfully" });
+      }
     }
   };
 

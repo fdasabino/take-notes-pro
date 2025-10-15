@@ -9,6 +9,8 @@ import { useRouter } from "next/router";
 import { BiArrowBack } from "react-icons/bi";
 import { resetPassword } from "@/store/thunk/auth.thunk";
 import { useAppDispatch } from "@/store/hooks";
+import { FirebaseError } from "firebase/app";
+import { showErrorToast, showSuccessToast } from "@/components/ui/toast/toast.component";
 
 const initialValues = { email: "" };
 
@@ -17,8 +19,21 @@ const ResetFormComponent = () => {
   const dispatch = useAppDispatch();
 
   const handleResetPassword = async (values: typeof initialValues) => {
-    console.log("Reset password for:", values.email);
-    await dispatch(resetPassword({ email: values.email }));
+    try {
+      const result = await dispatch(resetPassword({ email: values.email }));
+      if (resetPassword.rejected.match(result)) {
+        showErrorToast({ title: "Reset failed", message: result.payload || "Unknown error" });
+      } else {
+        showSuccessToast({
+          title: "Email sent",
+          message: "Check your inbox to reset your password",
+        });
+      }
+    } catch (error) {
+      if (error instanceof FirebaseError) {
+        showErrorToast({ title: "Reset failed", message: error.message || "Unknown error" });
+      }
+    }
   };
 
   return (

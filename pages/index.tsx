@@ -5,6 +5,7 @@ import React from "react";
 import { type FormikHelpers } from "formik";
 import NoteFormComponent from "@/components/forms/note.form.component";
 import LoaderComponent from "@/components/ui/loader/loader.component";
+import { showErrorToast, showSuccessToast } from "@/components/ui/toast/toast.component";
 
 export default function Home() {
   const { user, loading: isUserLoading } = useAppSelector((state) => state.auth);
@@ -27,12 +28,20 @@ export default function Home() {
       return;
     }
     try {
-      await dispatch(
+      const result = await dispatch(
         createNoteForUser({
           userId: user.uid,
           note: { title: getTimeOfDay(), content: values.note },
         })
       );
+      if (createNoteForUser.rejected.match(result)) {
+        showErrorToast({
+          title: "Failed to create note",
+          message: result.payload || "Unknown error",
+        });
+      } else {
+        showSuccessToast({ title: "Success", message: "Note created successfully" });
+      }
       resetForm();
     } finally {
       setSubmitting(false);
