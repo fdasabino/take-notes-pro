@@ -65,7 +65,7 @@ export default function App({ Component, pageProps: { ...pageProps } }: AppProps
     <Provider store={store}>
       <LayoutComponent>
         <AuthListener />
-        <Toaster position="top-right" />
+        <Toaster position="top-center" />
         <Component {...pageProps} />
       </LayoutComponent>
     </Provider>
