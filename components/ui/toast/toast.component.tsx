@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 import { FaCheckCircle, FaInfoCircle, FaTimesCircle } from "react-icons/fa";
 import { GoAlertFill } from "react-icons/go";
 import { TiTimes } from "react-icons/ti";
@@ -34,6 +35,11 @@ const toastStyles = {
   },
 };
 
+const toastMotionVariants = {
+  hidden: { opacity: 0, y: -12, scale: 0.95, filter: "blur(4px)" },
+  visible: { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" },
+};
+
 const ToastIcon = ({ type }: { type: ToastType }) => {
   const iconClass = "h-5 w-5";
 
@@ -55,12 +61,13 @@ const showToast = (type: ToastType, options: ToastOptions) => {
 
   toast.custom(
     (t) => (
-      <div
-        className={`${
-          t.visible ? "animate-enter" : "animate-leave"
-        } max-w-md w-full bg-card border border-border rounded-lg shadow-lg pointer-events-auto transition-all duration-300 ${
-          styles.background
-        }`}>
+      <motion.div
+        initial="hidden"
+        animate={t.visible ? "visible" : "hidden"}
+        variants={toastMotionVariants}
+        transition={{ duration: 0.24, ease: "easeOut" }}
+        layout
+        className={`max-w-md w-full bg-card border border-muted/20 rounded-lg shadow-lg pointer-events-auto transition-all duration-300 ${styles.background}`}>
         <div className="p-4">
           <div className="flex items-start gap-3">
             {/* Icon */}
@@ -88,7 +95,7 @@ const showToast = (type: ToastType, options: ToastOptions) => {
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     ),
     { duration }
   );
