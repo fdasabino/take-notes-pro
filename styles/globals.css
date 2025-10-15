@@ -191,6 +191,7 @@
   --size-font: var(--font-size);
 }
 
+/* Pulse Animation - Loading Indicator */
 .pulse {
   width: 22.4px;
   height: 22.4px;
@@ -220,39 +221,4 @@
   100% {
     box-shadow: 0 0 0 44.8px #0000;
   }
-}
-
-/* toast styles - react hot toast */
-
-/* Override default styles */
-.roto-root {
-  font-family: var(--font-nunito) !important;
-  font-size: var(--size-font) !important;
-}
-.roto-toast {
-  background: var(--color-surface) !important;
-  color: var(--color-foreground) !important;
-  border: 1px solid var(--color-muted) !important;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
-}
-.roto-toast.roto-toast--success {
-  border-left: 4px solid var(--color-success) !important;
-}
-.roto-toast.roto-toast--error {
-  border-left: 4px solid var(--color-error) !important;
-}
-.roto-toast.roto-toast--loading {
-  border-left: 4px solid var(--color-active) !important;
-}
-.roto-toast.roto-toast--warning {
-  border-left: 4px solid var(--color-warning) !important;
-}
-.roto-toast.roto-toast--info {
-  border-left: 4px solid var(--color-primary) !important;
-}
-.roto-close-button {
-  color: var(--color-muted) !important;
-}
-.roto-close-button:hover {
-  color: var(--color-foreground) !important;
 }

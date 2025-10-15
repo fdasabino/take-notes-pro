@@ -71,7 +71,6 @@ const RegisterFormComponent = () => {
             onSubmit={handleRegister}
             enableReinitialize>
             {({ values, isSubmitting, isValid, errors }) => {
-              console.log(errors);
               return (
                 <Form className="flex flex-col items-center space-y-4 p-4 rounded-lg w-full max-w-lg">
                   <InputComponent

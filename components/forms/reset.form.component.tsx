@@ -5,8 +5,6 @@ import { Form, Formik, FormikHelpers } from "formik";
 import { MdEmail, MdArrowForward } from "react-icons/md";
 import React from "react";
 import LogoComponent from "@/components/ui/logo/logo.component";
-import { useRouter } from "next/router";
-import { BiArrowBack } from "react-icons/bi";
 import { resetPassword } from "@/store/thunk/auth.thunk";
 import { useAppDispatch } from "@/store/hooks";
 import { FirebaseError } from "firebase/app";
@@ -15,7 +13,6 @@ import { showErrorToast, showSuccessToast } from "@/components/ui/toast/toast.co
 const initialValues = { email: "" };
 
 const ResetFormComponent = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
 
   const handleResetPassword = async (
@@ -56,18 +53,6 @@ const ResetFormComponent = () => {
             <h2 className="text-foreground">Reset Password</h2>
             <p className="text-foreground/50 mt-2">Enter your email to reset your password</p>
           </div>
-
-          <div className="w-full flex justify-center">
-            <ButtonComponent
-              size="sm"
-              variant="primary"
-              className="mx-auto"
-              icon={BiArrowBack}
-              iconPosition="right"
-              onClick={() => router.back()}>
-              Go Back
-            </ButtonComponent>
-          </div>
           {/* Divider */}
           <div className="relative">
             <hr className="border-muted/25" />
@@ -87,15 +72,13 @@ const ResetFormComponent = () => {
                     icon={MdEmail}
                     value={values.email}
                     placeholder="Enter your email address..."
-                    maxLength={100}
-                    showCharCount
                   />
                   <ButtonComponent
                     type="submit"
                     variant={isValid ? "success" : "danger"}
                     icon={MdArrowForward}
                     loading={isSubmitting}
-                    className="mt-2"
+                    className="mt-2 w-full"
                     size="sm"
                     disabled={isSubmitting || errors.email !== undefined}>
                     {isSubmitting ? "Sending email..." : "Send email"}

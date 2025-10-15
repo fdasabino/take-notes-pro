@@ -11,7 +11,7 @@ const InputComponent: React.FC<InputProps> = ({
 }) => {
   const [field, meta] = useField(props.name as string);
   const isError = meta.touched && meta.error;
-  const resolvedPlaceholder = isError ? meta.error : placeholder;
+  const resolvedPlaceholder = placeholder;
   const renderIcon = () => icon && icon({ size: 20 });
 
   // Calculate character count safely
@@ -24,8 +24,8 @@ const InputComponent: React.FC<InputProps> = ({
         {...field}
         {...props}
         maxLength={maxLength}
-        className={`${"text-base_white"} w-full p-1 bg-transparent focus:outline-none placeholder:text-sm ${
-          isError ? "placeholder:text-error" : "placeholder:text-base_gray"
+        className={`${"text-foreground"} w-full p-1 bg-transparent focus:outline-none placeholder:text-sm ${
+          isError ? "placeholder:text-error" : "placeholder:text-muted/50"
         } `}
         rows={props.rows || 4}
         placeholder={resolvedPlaceholder}
@@ -35,8 +35,8 @@ const InputComponent: React.FC<InputProps> = ({
         {...field}
         {...props}
         maxLength={maxLength}
-        className={` ${"text-base_white"} w-full p-1 bg-transparent focus:outline-none placeholder:text-sm ${
-          isError ? "placeholder:text-error" : "placeholder:text-base_gray"
+        className={` ${"text-foreground"} w-full p-1 bg-transparent focus:outline-none placeholder:text-sm ${
+          isError ? "placeholder:text-error" : "placeholder:text-muted/50"
         }`}
         placeholder={resolvedPlaceholder}
       />
@@ -44,19 +44,27 @@ const InputComponent: React.FC<InputProps> = ({
 
   return (
     <>
-      {showCharCount && (
-        <div
-          className={`flex items-center justify-end h-full ${"text-base_gray"} ${
-            isError ? "text-error" : ""
-          }  text-[9px] sm:text-xs font-bold`}>
-          <span>{charCount}</span> /<span>{maxLength ? maxLength : ""}</span>
+      <div className={`flex items-center justify-between h-full`}>
+        <div className="text-xs text-error">{meta.error}</div>
+        <div>
+          {showCharCount && (
+            <>
+              <span className={`text-foreground text-xs ${isError ? "text-error" : ""}`}>
+                {charCount}
+              </span>{" "}
+              <span className={`text-foreground text-xs ${isError ? "text-error" : ""}`}>/</span>
+              <span className={`text-foreground text-xs ${isError ? "text-error" : ""}`}>
+                {maxLength ? maxLength : ""}
+              </span>
+            </>
+          )}
         </div>
-      )}
+      </div>
       <div
-        className={`relative flex items-center gap-2 p-2 border rounded-b-md rounded-tl-md w-full ${"border-base_gray"} ${
+        className={`relative flex items-center gap-2 p-2 border rounded-b-md w-full mb-3 ${"border-muted/20"} ${
           isError ? "border-error" : ""
         }`}>
-        <span className={`text-base_primary ${isError ? "text-error" : ""}`}>{renderIcon()}</span>
+        <span className={`text-foreground ${isError ? "text-error" : ""}`}>{renderIcon()}</span>
         {inputOrTextarea}
       </div>
     </>
