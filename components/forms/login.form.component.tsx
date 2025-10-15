@@ -60,7 +60,7 @@ const LoginFormComponent = () => {
           {/* Divider */}
           <div className="relative">
             <hr className="border-muted/25" />
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-foreground/50">
+            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-background px-4 text-foreground/50 text-nowrap">
               or continue with email
             </span>
           </div>
