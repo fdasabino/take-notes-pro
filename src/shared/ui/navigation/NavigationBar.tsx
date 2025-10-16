@@ -5,7 +5,7 @@ import { FaUser, FaSignOutAlt, FaMoon, FaFileAlt } from "react-icons/fa";
 import Link from "next/link";
 import { useAppDispatch } from "@/store/hooks";
 import { signOutUser } from "@/features/auth/api/auth.thunk";
-import { showErrorToast, showInfoToast } from "@/shared/ui/toast/toast";
+import { showErrorToast, showInfoToast, showThemeSelectionToast } from "@/shared/ui/toast/toast";
 
 interface NavigationBarProps {
   userName?: string;
@@ -49,6 +49,14 @@ const NavigationBar = ({
 
   const handleMenuAction = async (action: string) => {
     setIsDropdownOpen(false);
+
+    if (action === "theme") {
+      showThemeSelectionToast({
+        title: "Appearance",
+        message: "Choose the theme that suits you best.",
+      });
+      return;
+    }
 
     if (action === "logout") {
       const result = await dispatch(signOutUser());

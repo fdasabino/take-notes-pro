@@ -3,7 +3,8 @@ import { motion } from "motion/react";
 import { FaCheckCircle, FaInfoCircle, FaTimesCircle } from "react-icons/fa";
 import { GoAlertFill } from "react-icons/go";
 import { TiTimes } from "react-icons/ti";
-import type { ReactNode } from "react";
+import { type FormEvent, type ReactNode, useState } from "react";
+import { getThemePreference, setThemePreference, type ThemePreference } from "@/shared/lib/theme";
 
 type ToastType = "success" | "error" | "warning" | "info";
 
@@ -56,14 +57,17 @@ const ToastContent = ({
   title,
   message,
   actions,
+  actionsWrapperClassName,
 }: {
   t: HotToast;
   type: ToastType;
   title: string;
   message?: string;
   actions?: ReactNode;
+  actionsWrapperClassName?: string;
 }) => {
   const styles = toastStyles[type];
+  const actionsWrapper = actionsWrapperClassName ?? "flex flex-wrap gap-2";
 
   return (
     <motion.div
@@ -72,7 +76,7 @@ const ToastContent = ({
       variants={toastMotionVariants}
       transition={{ duration: 0.24, ease: "easeOut" }}
       layout
-      className={`max-w-md w-full bg-card border border-border rounded-lg shadow-lg pointer-events-auto transition-all duration-300 ${styles.background}`}>
+      className={`max-w-md w-full bg-card border border-muted/20 rounded-lg shadow-lg pointer-events-auto transition-all duration-300 ${styles.background}`}>
       <div className="p-4">
         <div className="flex items-start gap-3">
           <div className={`flex-shrink-0 ${styles.iconBg} rounded-full p-2 ${styles.icon}`}>
@@ -89,7 +93,7 @@ const ToastContent = ({
               </p>
             )}
 
-            {actions ? <div className="mt-4 flex flex-wrap gap-2">{actions}</div> : null}
+            {actions ? <div className={`mt-4 ${actionsWrapper}`}>{actions}</div> : null}
           </div>
 
           <button
@@ -136,12 +140,16 @@ const showToast = (type: ToastType, options: ToastOptions) => {
   );
 };
 
-const buildActionButtonClass = (variant: "confirm" | "cancel") => {
+const buildActionButtonClass = (variant: "confirm" | "cancel" | "primary") => {
   if (variant === "confirm") {
-    return "inline-flex items-center justify-center rounded-md bg-error px-3 py-1.5 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-error/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-error";
+    return "inline-flex items-center justify-center rounded-md bg-error px-3 py-1.5 text-sm font-medium text-foreground shadow-sm transition-colors hover:bg-error/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-error disabled:opacity-60 disabled:cursor-not-allowed";
   }
 
-  return "inline-flex items-center justify-center rounded-md border border-muted/20 bg-muted/40 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-border";
+  if (variant === "primary") {
+    return "inline-flex items-center justify-center rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-primary disabled:opacity-60 disabled:cursor-not-allowed";
+  }
+
+  return "inline-flex items-center justify-center rounded-md border border-muted/20 bg-muted/40 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-border disabled:opacity-60 disabled:cursor-not-allowed";
 };
 
 export const showConfirmDeleteToast = ({
@@ -187,6 +195,165 @@ export const showConfirmDeleteToast = ({
                 {confirmLabel}
               </button>
             </>
+          }
+        />
+      );
+    },
+    { duration: toastDuration }
+  );
+};
+
+interface ThemeSelectionOptionConfig {
+  value: ThemePreference;
+  label: string;
+  description: string;
+}
+
+const THEME_OPTIONS: ThemeSelectionOptionConfig[] = [
+  {
+    value: "system",
+    label: "System",
+    description: "Match your device setting automatically.",
+  },
+  {
+    value: "light",
+    label: "Light",
+    description: "Bright background with dark text.",
+  },
+  {
+    value: "dark",
+    label: "Dark",
+    description: "Dim background with light text.",
+  },
+];
+
+const ThemeSelectionOption = ({
+  option,
+  isSelected,
+  onSelect,
+}: {
+  option: ThemeSelectionOptionConfig;
+  isSelected: boolean;
+  onSelect: (value: ThemePreference) => void;
+}) => (
+  <label
+    htmlFor={`theme-${option.value}`}
+    className={`flex cursor-pointer items-start gap-3 rounded-md border px-3 py-2 transition-colors ${
+      isSelected
+        ? "border-primary bg-primary/10 text-foreground"
+        : "border-muted/20 hover:border-primary/60 hover:bg-muted/20"
+    }`}>
+    <input
+      id={`theme-${option.value}`}
+      type="radio"
+      name="appearance-theme"
+      value={option.value}
+      checked={isSelected}
+      onChange={() => onSelect(option.value)}
+      className="mt-1 h-4 w-4"
+    />
+    <div className="flex flex-col">
+      <span className="text-sm font-medium text-foreground">{option.label}</span>
+      <span className="text-xs text-foreground/70">{option.description}</span>
+    </div>
+  </label>
+);
+
+const ThemeSelectionForm = ({
+  initialPreference,
+  onApply,
+  onCancel,
+}: {
+  initialPreference: ThemePreference;
+  onApply: (preference: ThemePreference) => void;
+  onCancel: () => void;
+}) => {
+  const [selectedPreference, setSelectedPreference] = useState<ThemePreference>(initialPreference);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    onApply(selectedPreference);
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="flex w-full flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        {THEME_OPTIONS.map((option) => (
+          <ThemeSelectionOption
+            key={option.value}
+            option={option}
+            isSelected={option.value === selectedPreference}
+            onSelect={setSelectedPreference}
+          />
+        ))}
+      </div>
+
+      <div className="flex justify-end gap-2">
+        <button
+          type="button"
+          onClick={onCancel}
+          className={buildActionButtonClass("cancel")}>
+          Close
+        </button>
+        <button
+          type="submit"
+          className={buildActionButtonClass("primary")}
+          disabled={selectedPreference === initialPreference}>
+          Apply
+        </button>
+      </div>
+    </form>
+  );
+};
+
+interface ThemeSelectionToastOptions {
+  title?: string;
+  message?: string;
+  duration?: number;
+  onApply?: (preference: ThemePreference) => void | Promise<void>;
+  onCancel?: () => void;
+  type?: ToastType;
+}
+
+export const showThemeSelectionToast = ({
+  title = "Choose theme",
+  message = "Pick how Take Notes Pro should look.",
+  duration,
+  onApply,
+  onCancel,
+  type = "info",
+}: ThemeSelectionToastOptions = {}) => {
+  const toastDuration = duration ?? Infinity;
+  const initialPreference = getThemePreference();
+
+  return toast.custom(
+    (t) => {
+      const handleApply = (preference: ThemePreference) => {
+        setThemePreference(preference);
+
+        Promise.resolve(onApply?.(preference)).finally(() => toast.dismiss(t.id));
+      };
+
+      const handleCancel = () => {
+        onCancel?.();
+        toast.dismiss(t.id);
+      };
+
+      return (
+        <ToastContent
+          t={t}
+          type={type}
+          title={title}
+          message={message}
+          actionsWrapperClassName="flex flex-col gap-4"
+          actions={
+            <ThemeSelectionForm
+              initialPreference={initialPreference}
+              onApply={handleApply}
+              onCancel={handleCancel}
+            />
           }
         />
       );

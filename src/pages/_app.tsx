@@ -10,6 +10,7 @@ import { clearNotes } from "@/features/notes/state/notes.slice";
 import AppLayout from "@/shared/layout/AppLayout";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
+import { initializeTheme } from "@/shared/lib/theme";
 const PUBLIC_PATHS = ["/auth/login", "/auth/register", "/auth/reset", "/_next", "/favicon.ico"];
 const AUTH_PATHS = ["/auth/login", "/auth/register"];
 
@@ -60,10 +61,19 @@ function AuthListener() {
   return null;
 }
 
+function ThemeInitializer() {
+  useEffect(() => {
+    initializeTheme();
+  }, []);
+
+  return null;
+}
+
 export default function App({ Component, pageProps: { ...pageProps } }: AppProps) {
   return (
     <Provider store={store}>
       <AppLayout>
+        <ThemeInitializer />
         <AuthListener />
         <Toaster position="bottom-center" />
         <Component {...pageProps} />
