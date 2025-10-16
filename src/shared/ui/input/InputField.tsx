@@ -10,7 +10,8 @@ const InputField: React.FC<InputProps> = ({
   ...props
 }) => {
   const [field, meta] = useField(props.name as string);
-  const isError = meta.touched && meta.error;
+  const showError = Boolean(meta.touched && meta.error);
+  const errorMessage = showError ? meta.error : "";
   const resolvedPlaceholder = placeholder;
   const renderIcon = () => icon && icon({ size: 20 });
 
@@ -25,7 +26,7 @@ const InputField: React.FC<InputProps> = ({
         {...props}
         maxLength={maxLength}
         className={`${"text-foreground"} w-full p-1 bg-transparent focus:outline-none placeholder:text-sm ${
-          isError ? "placeholder:text-error" : "placeholder:text-muted/80"
+          showError ? "placeholder:text-error" : "placeholder:text-muted/80"
         } `}
         rows={props.rows || 4}
         placeholder={resolvedPlaceholder}
@@ -36,7 +37,7 @@ const InputField: React.FC<InputProps> = ({
         {...props}
         maxLength={maxLength}
         className={` ${"text-foreground"} w-full p-1 bg-transparent focus:outline-none placeholder:text-sm ${
-          isError ? "placeholder:text-error" : "placeholder:text-muted/80"
+          showError ? "placeholder:text-error" : "placeholder:text-muted/80"
         }`}
         placeholder={resolvedPlaceholder}
       />
@@ -45,15 +46,15 @@ const InputField: React.FC<InputProps> = ({
   return (
     <>
       <div className={`flex items-center justify-between h-full`}>
-        <div className="text-xs text-error">{meta.error}</div>
+        <div className="text-xs text-error">{errorMessage}</div>
         <div>
           {showCharCount && (
             <>
-              <span className={`text-xs ${isError ? "text-error" : "text-foreground"}`}>
+              <span className={`text-xs ${showError ? "text-error" : "text-foreground"}`}>
                 {charCount}
               </span>{" "}
-              <span className={`text-xs ${isError ? "text-error" : "text-foreground"}`}>/</span>
-              <span className={`text-xs ${isError ? "text-error" : "text-foreground"}`}>
+              <span className={`text-xs ${showError ? "text-error" : "text-foreground"}`}>/</span>
+              <span className={`text-xs ${showError ? "text-error" : "text-foreground"}`}>
                 {maxLength ? maxLength : ""}
               </span>
             </>
@@ -62,9 +63,9 @@ const InputField: React.FC<InputProps> = ({
       </div>
       <div
         className={`relative flex items-center gap-2 p-2 border rounded-b-md w-full mb-3 ${
-          isError ? "border-error" : "border-muted/20"
+          showError ? "border-error" : "border-muted/20"
         }`}>
-        <span className={` ${isError ? "text-error" : "text-foreground"}`}>{renderIcon()}</span>
+        <span className={` ${showError ? "text-error" : "text-foreground"}`}>{renderIcon()}</span>
         {inputOrTextarea}
       </div>
     </>
