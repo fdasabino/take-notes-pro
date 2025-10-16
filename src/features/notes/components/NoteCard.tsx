@@ -1,7 +1,8 @@
 import { CardProps } from "@/features/notes/types/card.types";
+import type { NoteDocument } from "@/features/notes/types/notes.types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { deleteNoteForUser } from "@/features/notes/api/notes.thunk";
-import React, { useMemo, useState } from "react";
+import { deleteNoteForUser, updateNoteForUser } from "@/features/notes/api/notes.thunk";
+import React, { useEffect, useMemo, useState } from "react";
 import { MdOutlineEditNote } from "react-icons/md";
 import { TiDelete } from "react-icons/ti";
 import { motion } from "motion/react";
@@ -31,12 +32,19 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
   const { user } = useAppSelector((state) => state.auth);
   const [isHovered, setIsHovered] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(note.title ?? "");
+  const [editedContent, setEditedContent] = useState(note.content ?? "");
+  const [isSaving, setIsSaving] = useState(false);
 
   const formattedCreatedAt = useMemo(() => formatDateTime(note.createdAt), [note.createdAt]);
   const formattedUpdatedAt = useMemo(() => formatDateTime(note.updatedAt), [note.updatedAt]);
+  const previousTitle = note.title ?? "";
+  const previousContent = note.content ?? "";
 
   const contentPreview = useMemo(() => {
-    const content = note.content || "No content available. Start typing to add your thoughts here.";
+    const content =
+      note.content || "No content available. Start typing to add your thoughts here.";
     const maxLength = 200;
     if (content.length <= maxLength) return content;
     return content.slice(0, maxLength) + "...";
@@ -63,6 +71,87 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
         title: "Error deleting note",
         message: "There was an error deleting the note. Please try again.",
       });
+    }
+  };
+
+  const hasChanges = editedTitle !== previousTitle || editedContent !== previousContent;
+
+  useEffect(() => {
+    if (!isEditing) {
+      setEditedTitle(note.title ?? "");
+      setEditedContent(note.content ?? "");
+    }
+  }, [note.content, note.id, note.title, isEditing]);
+
+  const beginEdit = () => {
+    if (!user?.uid) {
+      showErrorToast({
+        title: "Unable to edit",
+        message: "You need to be signed in to edit notes.",
+      });
+      return;
+    }
+
+    setEditedTitle(note.title ?? "");
+    setEditedContent(note.content ?? "");
+    setIsExpanded(true);
+    setIsEditing(true);
+  };
+
+  const cancelEdit = () => {
+    setEditedTitle(note.title ?? "");
+    setEditedContent(note.content ?? "");
+    setIsEditing(false);
+    setIsSaving(false);
+  };
+
+  const handleSave = async () => {
+    if (!user?.uid) {
+      showErrorToast({
+        title: "Unable to edit",
+        message: "You need to be signed in to edit notes.",
+      });
+      return;
+    }
+
+    const changes: Partial<Omit<NoteDocument, "id" | "createdAt">> = {};
+    if (editedTitle !== previousTitle) {
+      changes.title = editedTitle;
+    }
+    if (editedContent !== previousContent) {
+      changes.content = editedContent;
+    }
+
+    if (Object.keys(changes).length === 0) {
+      setIsEditing(false);
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const result = await dispatch(
+        updateNoteForUser({
+          userId: user.uid,
+          noteId: note.id,
+          changes,
+        })
+      );
+
+      if (updateNoteForUser.rejected.match(result)) {
+        showErrorToast({
+          title: "Error updating note",
+          message: result.payload || "Unable to save your changes. Please try again.",
+        });
+        return;
+      }
+
+      showSuccessToast({
+        title: "Note updated",
+        message: "Your changes have been saved.",
+      });
+      setIsEditing(false);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -110,13 +199,29 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
             </motion.div>
 
             {/* Title */}
-            <motion.h3
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.15 }}
-              className="text-foreground pr-2">
-              {note.title || "Untitled note"}
-            </motion.h3>
+            {isEditing ? (
+              <motion.div
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.15 }}
+                className="pr-2">
+                <input
+                  value={editedTitle}
+                  onChange={(event) => setEditedTitle(event.target.value)}
+                  maxLength={120}
+                  placeholder="Add a title for this note"
+                  className="w-full rounded-xl border border-muted/25 bg-background/80 px-3 py-2 text-base text-foreground shadow-sm transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
+                />
+              </motion.div>
+            ) : (
+              <motion.h3
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.15 }}
+                className="pr-2 text-foreground">
+                {note.title || "Untitled note"}
+              </motion.h3>
+            )}
           </div>
 
           {/* Action Buttons */}
@@ -125,42 +230,63 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
             className="flex items-center gap-2">
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              whileTap={{ scale: 0.95 }}
-              type="button"
-              onClick={() => console.log("Edit note", note.id)}
-              className="group/btn relative rounded-xl border border-muted/15 bg-primary/10 p-2.5 text-foreground shadow-sm transition-all hover:border-primary/20 hover:bg-active/40 hover:shadow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-              aria-label="Edit note">
-              <MdOutlineEditNote className="h-5 w-5 transition-transform group-hover/btn:scale-110" />
-              <motion.span
-                className="absolute inset-0 rounded-xl bg-primary/5 opacity-0 group-hover/btn:opacity-100"
-                layoutId="editHover"
-              />
-            </motion.button>
+            {isEditing ? (
+              <>
+                <button
+                  type="button"
+                  onClick={cancelEdit}
+                  disabled={isSaving}
+                  className="inline-flex items-center justify-center rounded-xl border border-muted/30 bg-muted/15 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border disabled:cursor-not-allowed disabled:opacity-60">
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  disabled={isSaving || !hasChanges}
+                  className="inline-flex items-center justify-center rounded-xl border border-primary/40 bg-primary px-3 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-60">
+                  {isSaving ? "Saving..." : "Save"}
+                </button>
+              </>
+            ) : (
+              <>
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="button"
+                  onClick={beginEdit}
+                  className="group/btn relative rounded-xl border border-muted/15 bg-primary/10 p-2.5 text-foreground shadow-sm transition-all hover:border-primary/20 hover:bg-active/40 hover:shadow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  aria-label="Edit note">
+                  <MdOutlineEditNote className="h-5 w-5 transition-transform group-hover/btn:scale-110" />
+                  <motion.span
+                    className="absolute inset-0 rounded-xl bg-primary/5 opacity-0 group-hover/btn:opacity-100"
+                    layoutId="editHover"
+                  />
+                </motion.button>
 
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: -5 }}
-              whileTap={{ scale: 0.95 }}
-              type="button"
-              onClick={() =>
-                showConfirmDeleteToast({
-                  title: "Delete this note?",
-                  message: "This action cannot be undone.",
-                  confirmLabel: "Delete",
-                  cancelLabel: "Keep note",
-                  type: "error",
-                  onConfirm: () => handleDelete(),
-                })
-              }
-              className="group/btn relative rounded-xl border border-error/20 bg-error/10 p-2.5 text-error shadow-sm transition-all hover:border-error/40 hover:bg-error/20 hover:shadow  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error/50"
-              aria-label="Delete note">
-              <TiDelete className="h-5 w-5 transition-transform group-hover/btn:scale-110" />
-              <motion.span
-                className="absolute inset-0 rounded-xl bg-destructive/5 opacity-0 group-hover/btn:opacity-100"
-                layoutId="deleteHover"
-              />
-            </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: -5 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="button"
+                  onClick={() =>
+                    showConfirmDeleteToast({
+                      title: "Delete this note?",
+                      message: "This action cannot be undone.",
+                      confirmLabel: "Delete",
+                      cancelLabel: "Keep note",
+                      type: "error",
+                      onConfirm: () => handleDelete(),
+                    })
+                  }
+                  className="group/btn relative rounded-xl border border-error/20 bg-error/10 p-2.5 text-error shadow-sm transition-all hover:border-error/40 hover:bg-error/20 hover:shadow  focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-error/50"
+                  aria-label="Delete note">
+                  <TiDelete className="h-5 w-5 transition-transform group-hover/btn:scale-110" />
+                  <motion.span
+                    className="absolute inset-0 rounded-xl bg-destructive/5 opacity-0 group-hover/btn:opacity-100"
+                    layoutId="deleteHover"
+                  />
+                </motion.button>
+              </>
+            )}
           </motion.div>
         </header>
 
@@ -183,14 +309,26 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
               initial={false}
               animate={{ height: isExpanded ? "auto" : "auto" }}
               className="relative overflow-hidden">
-              <p className="text-foreground whitespace-pre-wrap break-words leading-relaxed">
-                {isExpanded
-                  ? note.content || "No content available. Start typing to add your thoughts here."
-                  : contentPreview}
-              </p>
+              {isEditing ? (
+                <textarea
+                  value={editedContent}
+                  onChange={(event) => setEditedContent(event.target.value)}
+                  rows={isExpanded ? 10 : 6}
+                  maxLength={500}
+                  placeholder="Update your note content..."
+                  className="min-h-[160px] w-full rounded-2xl border border-muted/25 bg-background/80 px-4 py-3 text-sm text-foreground shadow-inner transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
+                />
+              ) : (
+                <p className="whitespace-pre-wrap break-words leading-relaxed text-foreground">
+                  {isExpanded
+                    ? note.content ||
+                      "No content available. Start typing to add your thoughts here."
+                    : contentPreview}
+                </p>
+              )}
             </motion.div>
 
-            {shouldShowReadMore && (
+            {!isEditing && shouldShowReadMore && (
               <motion.button
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -232,6 +370,13 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
                   </>
                 )}
               </motion.button>
+            )}
+
+            {isEditing && (
+              <div className="flex justify-between text-xs text-muted-foreground/70">
+                <span>{editedContent.length}/500 characters</span>
+                {hasChanges ? <span>Unsaved changes</span> : <span>All changes saved</span>}
+              </div>
             )}
           </div>
         </motion.div>

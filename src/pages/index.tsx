@@ -20,8 +20,8 @@ export default function Home() {
   };
 
   const handleSubmit = async (
-    values: { note: string },
-    { resetForm, setSubmitting }: FormikHelpers<{ note: string }>
+    values: { title: string; note: string },
+    { resetForm, setSubmitting }: FormikHelpers<{ title: string; note: string }>
   ) => {
     if (!user?.uid) {
       setSubmitting(false);
@@ -31,7 +31,7 @@ export default function Home() {
       const result = await dispatch(
         createNoteForUser({
           userId: user.uid,
-          note: { title: getTimeOfDay(), content: values.note },
+          note: { title: values.title.trim() || getTimeOfDay(), content: values.note },
         })
       );
       if (createNoteForUser.rejected.match(result)) {
