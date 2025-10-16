@@ -54,7 +54,7 @@ export default function Home() {
 
       {user ? <h1 className="text-2xl font-bold">Welcome {user.name || user.email}</h1> : null}
       <NoteForm onSubmit={handleSubmit} />
-      <div className="mt-10 gap-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 gap-4 grid grid-cols-1 md:grid-cols-2">
         {items.length > 0 ? (
           items.map((note) => (
             <NoteCard

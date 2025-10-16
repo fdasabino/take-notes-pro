@@ -27,8 +27,9 @@ const NoteForm: React.FC<NoteFormProps> = ({ onSubmit }) => {
           <InputField
             name="title"
             value={values.title}
-            placeholder="Give your note a title (optional)"
+            placeholder="Give your note a title..."
             maxLength={120}
+            showCharCount
           />
 
           <InputField

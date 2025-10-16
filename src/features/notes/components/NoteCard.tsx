@@ -3,14 +3,11 @@ import type { NoteDocument } from "@/features/notes/types/notes.types";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { deleteNoteForUser, updateNoteForUser } from "@/features/notes/api/notes.thunk";
 import React, { useEffect, useMemo, useState } from "react";
-import { MdOutlineEditNote } from "react-icons/md";
+import { MdOutlineCancel, MdOutlineEditNote } from "react-icons/md";
 import { TiDelete } from "react-icons/ti";
 import { motion } from "motion/react";
-import {
-  showConfirmDeleteToast,
-  showErrorToast,
-  showSuccessToast,
-} from "@/shared/ui/toast/toast";
+import { showConfirmDeleteToast, showErrorToast, showSuccessToast } from "@/shared/ui/toast/toast";
+import { FaCheck } from "react-icons/fa";
 
 const formatDateTime = (value?: string) => {
   if (!value) {
@@ -43,8 +40,7 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
   const previousContent = note.content ?? "";
 
   const contentPreview = useMemo(() => {
-    const content =
-      note.content || "No content available. Start typing to add your thoughts here.";
+    const content = note.content || "No content available. Start typing to add your thoughts here.";
     const maxLength = 200;
     if (content.length <= maxLength) return content;
     return content.slice(0, maxLength) + "...";
@@ -188,15 +184,26 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
               <span className="text-xs text-muted-foreground">
                 {formattedCreatedAt ?? "Draft note"}
               </span>
-              {formattedUpdatedAt && formattedUpdatedAt !== formattedCreatedAt && (
+            </motion.div>
+
+            {/* Updated Timestamp Badge */}
+            {formattedUpdatedAt && formattedUpdatedAt !== formattedCreatedAt && (
+              <motion.div
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 }}
+                className="inline-flex items-center gap-2 rounded-full bg-muted/10 px-3 py-1.5">
                 <>
-                  <span className="text-xs text-muted-foreground/50">•</span>
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/50 opacity-75 duration-1000" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
+                  </span>
                   <span className="text-xs text-muted-foreground/70">
                     Updated {formattedUpdatedAt}
                   </span>
                 </>
-              )}
-            </motion.div>
+              </motion.div>
+            )}
 
             {/* Title */}
             {isEditing ? (
@@ -237,14 +244,14 @@ const NoteCard: React.FC<CardProps> = ({ note }) => {
                   onClick={cancelEdit}
                   disabled={isSaving}
                   className="inline-flex items-center justify-center rounded-xl border border-muted/30 bg-muted/15 px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border disabled:cursor-not-allowed disabled:opacity-60">
-                  Cancel
+                  <MdOutlineCancel />
                 </button>
                 <button
                   type="button"
                   onClick={handleSave}
                   disabled={isSaving || !hasChanges}
                   className="inline-flex items-center justify-center rounded-xl border border-primary/40 bg-primary px-3 py-1.5 text-sm font-medium text-white shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-60">
-                  {isSaving ? "Saving..." : "Save"}
+                  <FaCheck />
                 </button>
               </>
             ) : (
