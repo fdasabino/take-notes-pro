@@ -75,7 +75,7 @@ export default function App({ Component, pageProps: { ...pageProps } }: AppProps
       <AppLayout>
         <ThemeInitializer />
         <AuthListener />
-        <Toaster position="bottom-center" />
+        <Toaster position="top-center" />
         <Component {...pageProps} />
       </AppLayout>
     </Provider>

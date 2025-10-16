@@ -5,6 +5,7 @@ import { GoAlertFill } from "react-icons/go";
 import { TiTimes } from "react-icons/ti";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { getThemePreference, setThemePreference, type ThemePreference } from "@/shared/lib/theme";
+import Button from "@/shared/ui/button/Button";
 
 type ToastType = "success" | "error" | "warning" | "info";
 
@@ -291,18 +292,18 @@ const ThemeSelectionForm = ({
       </div>
 
       <div className="flex justify-end gap-2">
-        <button
+        <Button
+          variant="danger"
           type="button"
-          onClick={onCancel}
-          className={buildActionButtonClass("cancel")}>
+          onClick={onCancel}>
           Close
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="primary"
           type="submit"
-          className={buildActionButtonClass("primary")}
           disabled={selectedPreference === initialPreference}>
           Apply
-        </button>
+        </Button>
       </div>
     </form>
   );
