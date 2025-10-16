@@ -11,6 +11,7 @@ import AppLayout from "@/shared/layout/AppLayout";
 import { useRouter } from "next/router";
 import { Toaster } from "react-hot-toast";
 import { initializeTheme } from "@/shared/lib/theme";
+import Head from "next/head";
 const PUBLIC_PATHS = ["/auth/login", "/auth/register", "/auth/reset", "/_next", "/favicon.ico"];
 const AUTH_PATHS = ["/auth/login", "/auth/register"];
 
@@ -73,6 +74,19 @@ export default function App({ Component, pageProps: { ...pageProps } }: AppProps
   return (
     <Provider store={store}>
       <AppLayout>
+        <Head>
+          <title>Take Notes Pro</title>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1"
+          />
+          <link
+            rel="icon"
+            href="/favicon.svg"
+            sizes="any"
+            type="image/svg+xml"
+          />
+        </Head>
         <ThemeInitializer />
         <AuthListener />
         <Toaster position="top-center" />
