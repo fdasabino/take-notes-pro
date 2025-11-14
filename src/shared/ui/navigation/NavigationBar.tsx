@@ -124,7 +124,7 @@ const NavigationBar = ({
 
                 <div className="border-t border-muted/20"></div>
 
-                {/* Menu Items */}
+                {/* Menu Items 
                 <button
                   onClick={() => handleMenuAction("profile")}
                   className="cursor-pointer w-full px-4 py-2 text-left flex items-center gap-2 text-foreground hover:bg-active/20 transition-colors">
@@ -138,6 +138,7 @@ const NavigationBar = ({
                   <FaFileAlt className="h-4 w-4" />
                   <span>My Notes</span>
                 </button>
+                */}
 
                 <div className="border-t border-muted/20 my-1"></div>
 
