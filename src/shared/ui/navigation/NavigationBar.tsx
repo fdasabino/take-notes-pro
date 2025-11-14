@@ -122,9 +122,9 @@ const NavigationBar = ({
                   </p>
                 </div>
 
-                <div className="border-t border-muted/20"></div>
 
                 {/* Menu Items 
+                <div className="border-t border-muted/20"></div>
                 <button
                   onClick={() => handleMenuAction("profile")}
                   className="cursor-pointer w-full px-4 py-2 text-left flex items-center gap-2 text-foreground hover:bg-active/20 transition-colors">
